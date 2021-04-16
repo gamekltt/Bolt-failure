@@ -15,7 +15,8 @@ This addon support blender version above 2.80.
 4. In Blender, go *Edit > Preferences > Add-ons* and find **Damaged Bolt** , **Bolt Factory** and **Bool Tool**, Make sure they are activated.
 
 5. Now, you should see the addon in the right of you window.
-6. ![UI](https://user-images.githubusercontent.com/59843863/114618084-3e167f80-9ca9-11eb-89c0-22010f52934a.PNG)
+6. ![UI](https://user-images.githubusercontent.com/59843863/115017216-7939ce00-9eb6-11eb-96fd-367329d3c9c5.PNG)
+
 
 ## 2. Advanced
 ### 2.1 Head failure parameters
