@@ -1,4 +1,4 @@
-# Bolt-failure
+# Damaged Bolt
 
 This is a blender addon to create M3 and M6 bolt with failures, such as break, corrosion and head failure.
 
@@ -6,13 +6,13 @@ This addon support blender version above 2.80.
 
 ## 1. Installation
 
-1. Download the files Boltfailure.py ,the blender model fatigue and overload and the picture corrosion.jpg.
+1. Download the files DamagedBolt.py ,the blender model fatigue and overload and the picture corrosion.jpg.
 
 2. You need change the storge path for the files in the line 25, 26, 27 of Boltfailure.py.![path](https://user-images.githubusercontent.com/59843863/114616914-bc722200-9ca7-11eb-9bf7-67b05a28843f.PNG)
 
 3. Save boltfailure.py  to path ...\Blender Foundation\Blender 2.90\2.90\scripts\addons.
 
-4. In Blender, go *Edit > Preferences > Add-ons* and find **Bolt Failure** , **Bolt Factory** and **Bool Tool**, Make sure they are activated.
+4. In Blender, go *Edit > Preferences > Add-ons* and find **Damaged Bolt** , **Bolt Factory** and **Bool Tool**, Make sure they are activated.
 
 5. Now, you should see the addon in the right of you window.
 6. ![UI](https://user-images.githubusercontent.com/59843863/114618084-3e167f80-9ca9-11eb-89c0-22010f52934a.PNG)
