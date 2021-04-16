@@ -1,5 +1,5 @@
 bl_info = {
-    "name": "Bolt Failure",
+    "name": "Damaged Bolt",
     "author": "Liu Yang",
     "version": (0, 0, 1),
     "blender": (2, 80, 0),
@@ -26,11 +26,11 @@ path_fatigue=r"F://kit//abschlussarbeit//test//fatigue.blend/Object/"
 path_overload = r"F://kit//abschlussarbeit//test//overload.blend/Object/"
 path_corrosion = r"F:\\kit\\abschlussarbeit\\fotos\\Corrosion.jpg"
 class BoltFailure(bpy.types.Panel):
-    bl_label = "Bolt Failure"
-    bl_idname = "Bolt Failure"
+    bl_label = "Damaged Bolt"
+    bl_idname = "Damaged Bolt"
     bl_space_type = "VIEW_3D"
     bl_region_type = 'UI'
-    bl_category = "BoltFailure"
+    bl_category = "DamagedBolt"
 
     def draw(self, context):
         layout = self.layout
