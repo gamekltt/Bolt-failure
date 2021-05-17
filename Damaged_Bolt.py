@@ -24,7 +24,7 @@ from bpy.props import (
 )
 path_fatigue=r"F://kit//abschlussarbeit//test//fatigue.blend/Object/"
 path_overload = r"F://kit//abschlussarbeit//test//overload.blend/Object/"
-path_corrosion = r"F:\\kit\\abschlussarbeit\\fotos\\Corrosion.jpg"
+path_corrosion = r"E:\\blender\\2.90\\scripts\\addons\image_corrosion\\Corrosion.jpg"
 class BoltFailure(bpy.types.Panel):
     bl_label = "Damaged Bolt"
     bl_idname = "Damaged Bolt"
@@ -34,6 +34,7 @@ class BoltFailure(bpy.types.Panel):
 
     def draw(self, context):
         layout = self.layout
+        layout.operator(Create_damged_bolt.bl_idname,text = 'Create_bolt')
         layout.operator(Corrosion.bl_idname,text='Corrosion')
         layout.operator(Break.bl_idname,text='Break')
         layout.operator(Headfail.bl_idname,text = 'Headfail')
@@ -43,9 +44,198 @@ class BoltFailure(bpy.types.Panel):
         layout.operator(Fail_random_m6_noBreak.bl_idname,text = 'Random_M6_noBreak')
         
 
+class Create_damged_bolt(Operator):
+    bl_label = "Create_bolt"
+    bl_idname = "fail.createbolt"
+    bl_options = {'REGISTER', 'UNDO'}
+    Bolt_List = [('None', 'None', 'None'),
+                       ('M3', 'M3', 'M3'),
+                       ('M6', 'M6', 'M6')]
+    Thread_Length: FloatProperty(
+            attr='Shank_Length',
+            name='Shank Length', default=0,
+            min=0, soft_min=0, max=100,
+            description='Length of the thread',
+            unit='LENGTH',
+            )
+    Bolt_Type: EnumProperty(
+            attr='bolt_Type',
+            name='Bolt Type',
+            description='Choose the bolt type you would like',
+            items=Bolt_List, default='None'
+            )
+    bf_Bit_List = [('None','None','None'),
+                     ('bf_Allen','Allen','Allen'),
+                     ('bf_Torx','Torx','Torx'),
+                     ('bf_Phillips','Phillips','Phillips')]
+    bf_Bit_Type:EnumProperty(
+            attr='bf_Bit_Type',
+            name='Bit Type',
+            description='Choose the type of bit',
+            items=bf_Bit_List,default='None'
+            )
+    Fail_Corrosion = [('None', 'None', 'None'),
+                       ('Corrosion', 'Corrosion', 'Corrosion')]
+    Fail_Corrosion: EnumProperty(
+            attr='Fail_Corrosion',
+            name='Fail Corrosion',
+            description='Corrosion',
+            items=Fail_Corrosion, default='None'
+            )
+    Fail_Headfail = [('None', 'None', 'None'),
+                       ('Headfail', 'Headfail', 'Headfail')]
+    Fail_Headfail: EnumProperty(
+            attr='Fail_Headfail',
+            name='Fail Headfail',
+            description='Headfail',
+            items=Fail_Headfail, default='None'
+            )
+    bf_Corrosion_Percent:IntProperty(
+            attr='bf_Corrosion_Percent',
+            name='Corrosion Percent', default=0,
+            min=0, soft_min=1,
+            max=100,
+            description='Percent of the corrosion',
+            )
+    Hf_radius_over_phillips: FloatProperty(
+            attr='Hf_radius_over',
+            name='Headfailure over radius', default=0,
+            min=0.5, soft_min=0, max=1.6,
+            description='Radius of the headfailure',
+            unit='LENGTH',
+            )        
+    Hf_radius_under_phillips: FloatProperty(
+            attr='Hf_radius_under',
+            name='Headfailure under radius', default=0,
+            min=0.4, soft_min=0, max=0.7,
+            description='Radius of the headfailure',
+            unit='LENGTH',
+            )     
+    Hf_radius_over_torx: FloatProperty(
+            attr='Hf_radius_over',
+            name='Headfailure over radius', default=0,
+            min=1.4, soft_min=0, max=1.9,
+            description='Radius of the headfailure',
+            unit='LENGTH',
+            )        
+    Hf_radius_under_torx: FloatProperty(
+            attr='Hf_radius_under',
+            name='Headfailure under radius', default=0,
+            min=1.4, soft_min=0, max=1.9,
+            description='Radius of the headfailure',
+            unit='LENGTH',
+            ) 
+    Hf_radius_over_allen: FloatProperty(
+            attr='Hf_radius_over',
+            name='Headfailure over radius', default=0,
+            min=1.5, soft_min=0, max=1.7,
+            description='Radius of the headfailure',
+            unit='LENGTH',
+            )        
+    Hf_radius_under_allen: FloatProperty(
+            attr='Hf_radius_under',
+            name='Headfailure under radius', default=0,
+            min=1.6, soft_min=0, max=1.7,
+            description='Radius of the headfailure',
+            unit='LENGTH',
+            )    
+    def create_general_bolt(self):
+        local = (0,0,0)
+        bit_type = self.bf_Bit_Type
+        shank_length = 0
+        shank_dia = 6
+        cap_height = 3
+        cap_dia = 7
+        thread_length = self.Thread_Length
+        major = 3
+        minor = 4
+        pitch = 1
+        crest = 41
+        root = 1
+        div = 60
+        if self.bf_Bit_Type == 'bf_Torx':
+            #Torx
+            
+            bpy.ops.mesh.bolt_add(align='CURSOR', #location=local,  
+                                bf_Model_Type='bf_Model_Bolt', bf_Head_Type='bf_Head_Cap', 
+                                bf_Bit_Type='bf_Bit_Torx', bf_Shank_Length=shank_length, 
+                                bf_Shank_Dia=shank_dia, bf_Torx_Size_Type='bf_Torx_T20', bf_Torx_Bit_Depth=2, 
+                                bf_Cap_Head_Height=cap_height+1, bf_Cap_Head_Dia=cap_dia, 
+                                bf_Thread_Length=thread_length, bf_Major_Dia=major, bf_Pitch=pitch, bf_Minor_Dia=minor, 
+                                bf_Crest_Percent=crest, bf_Root_Percent=root,  bf_Div_Count=div,)
+
+            
+        elif self.bf_Bit_Type == 'bf_Phillips':
+            # Cross
+            bpy.ops.mesh.bolt_add(align='WORLD', location=local,
+                                    bf_Model_Type='bf_Model_Bolt',
+                                    bf_Head_Type='bf_Head_Cap', bf_Bit_Type='bf_Bit_Philips', 
+                                    bf_Shank_Length=shank_length, bf_Shank_Dia=shank_dia, 
+                                    bf_Phillips_Bit_Depth=2.23269, bf_Cap_Head_Height=cap_height, bf_Cap_Head_Dia=cap_dia, 
+                                    bf_Philips_Bit_Dia=3, bf_Thread_Length=thread_length, 
+                                    bf_Major_Dia=major, bf_Pitch=pitch, bf_Minor_Dia=minor, 
+                                bf_Crest_Percent=crest, bf_Root_Percent=root,  bf_Div_Count=div)
+
+            
+        elif self.bf_Bit_Type == 'bf_Allen':
+            #Allen
+            bpy.ops.mesh.bolt_add(align='WORLD', location=local, 
+                                bf_Model_Type='bf_Model_Bolt', bf_Head_Type='bf_Head_Cap', bf_Bit_Type='bf_Bit_Allen', 
+                                bf_Shank_Length=shank_length, bf_Shank_Dia=shank_dia, 
+                                bf_Allen_Bit_Depth=2, bf_Allen_Bit_Flat_Distance=3, bf_Cap_Head_Height=cap_height, bf_Cap_Head_Dia=cap_dia, 
+                                bf_Thread_Length=thread_length, 
+                                bf_Major_Dia=major, bf_Pitch=pitch, bf_Minor_Dia=minor, 
+                                bf_Crest_Percent=crest, bf_Root_Percent=root,  bf_Div_Count=div)
+
+    def invoke(self, context, event):
+        wm = context.window_manager
+        return wm.invoke_props_dialog(self)
+    def draw(self, context):
+        layout = self.layout
+        layout.prop(self,'Thread_Length')
+        layout.prop(self,'bf_Bit_Type')
+        layout.prop(self,'Fail_Corrosion')
+        if self.Fail_Corrosion == 'Corrosion':
+            layout.prop(self,'bf_Corrosion_Percent')
+        layout.prop(self,'Fail_Headfail')
+        if self.Fail_Headfail == 'Headfail':
+            if self.bf_Bit_Type == 'bf_Phillips':
+                layout.prop(self,'Hf_radius_over_phillips')
+                layout.prop(self,'Hf_radius_under_phillips')
+            elif self.bf_Bit_Type == 'bf_Torx':
+                layout.prop(self,'Hf_radius_over_torx')
+                layout.prop(self,'Hf_radius_under_torx')
+            elif self.bf_Bit_Type == 'bf_Allen':
+                layout.prop(self,'Hf_radius_over_allen')
+                layout.prop(self,'Hf_radius_under_allen')
 
 
+    def execute(self, context):
+        if self.bf_Bit_Type == 'bf_Phillips':
+            Hf_radius_over = self.Hf_radius_over_phillips
+            Hf_radius_under = self.Hf_radius_under_phillips
+        elif self.bf_Bit_Type == 'bf_Torx':
+            Hf_radius_over = self.Hf_radius_over_torx
+            Hf_radius_under = self.Hf_radius_under_torx
+        elif self.bf_Bit_Type == 'bf_Allen':
+            Hf_radius_over = self.Hf_radius_over_allen
+            Hf_radius_under = self.Hf_radius_under_allen
+        bit_type = self.bf_Bit_Type
+        thread_Length = self.Thread_Length
+        if self.Fail_Corrosion == 'None' and self.Fail_Headfail == 'None':
+            self.create_general_bolt()
+        elif self.Fail_Corrosion == 'Corrosion' and self.Fail_Headfail == 'None':
+            self.create_general_bolt()
+            bpy.ops.fail.corro(bf_Corrosion_Percent=self.bf_Corrosion_Percent)
+        elif self.Fail_Corrosion == 'None' and self.Fail_Headfail == 'Headfail':
+            self.create_general_bolt()
+            bpy.ops.fail.head(bf_Bit_Type=bit_type, Bolt_Type='M3', Shank_Length=thread_Length, Hf_radius_over=Hf_radius_over, Hf_radius_under=Hf_radius_under)
+        elif self.Fail_Corrosion == 'Corrosion' and self.Fail_Headfail =='Headfail':
+            self.create_general_bolt()
+            bpy.ops.fail.head(bf_Bit_Type=bit_type, Bolt_Type='M3', Shank_Length=thread_Length, Hf_radius_over=Hf_radius_over, Hf_radius_under=Hf_radius_under)
+            bpy.ops.fail.corro(bf_Corrosion_Percent=self.bf_Corrosion_Percent)
 
+        return {'FINISHED'}
 
 class Break(Operator):
     bl_label = "Break"
@@ -69,7 +259,8 @@ class Break(Operator):
             name='Bolt Type',
             description='Choose the bolt type you would like',
             items=Bolt_List, default='None'
-            )  
+            ) 
+
     Shank_Length: FloatProperty(
             attr='Shank_Length',
             name='Shank Length', default=0,
@@ -248,6 +439,8 @@ class Corrosion(Operator):
         bpy.context.object.active_material = BoltCorrosion
         principled1_node = BoltCorrosion.node_tree.nodes.get('Principled BSDF')
         Output_node = BoltCorrosion.node_tree.nodes.get('Material Output')
+        bpy.ops.mesh.uv_texture_add()
+        bpy.ops.uv.smart_project()
         principled1_node.location = (-234,460)
         principled1_node.inputs[0].default_value = (1,1,1,1)
         principled1_node.inputs[3].default_value = (1,1,1,1)
@@ -345,14 +538,20 @@ class Headfail(bpy.types.Operator):
             description='Length of the unthreaded shank',
             unit='LENGTH',
             )      
-    Hf_radius: FloatProperty(
-            attr='Hf_radius',
-            name='Headfailure radius', default=0,
+    Hf_radius_over: FloatProperty(
+            attr='Hf_radius_over',
+            name='Headfailure over radius', default=0,
             min=0, soft_min=0, max=4,
             description='Radius of the headfailure',
             unit='LENGTH',
             )        
-    
+    Hf_radius_under: FloatProperty(
+            attr='Hf_radius_under',
+            name='Headfailure under radius', default=0,
+            min=0, soft_min=0, max=4,
+            description='Radius of the headfailure',
+            unit='LENGTH',
+            )        
     
     
     def invoke(self, context, event):
@@ -365,65 +564,55 @@ class Headfail(bpy.types.Operator):
         layout.prop(self,'Bolt_Type')
         layout.prop(self,'bf_Bit_Type')
         layout.prop(self,'Shank_Length')
-        layout.prop(self,'Hf_radius')       
+        layout.prop(self,'Hf_radius_over')
+        layout.prop(self,'Hf_radius_under')        
     def hf_Torx_m3(self):
         high = self.Shank_Length
-        r = self.Hf_radius
+        r_over = self.Hf_radius_over
+        r_under = self.Hf_radius_under
         obj_bolt = bpy.context.active_object
         x = obj_bolt.location[0]
         y = obj_bolt.location[1]
         z = obj_bolt.location[2]
-        bpy.ops.mesh.primitive_cone_add(radius1=1, radius2=r, depth=1.5, enter_editmode=False, align='WORLD', location=(0, 0, 0), scale=(1, 1, 1))
+        bpy.ops.mesh.primitive_cone_add(radius1=r_under, radius2=r_over, depth=2, enter_editmode=False, align='WORLD', location=(0, 0, 0), scale=(1, 1, 1))
         obj_cone = bpy.context.active_object
         obj_cone.location[0] = x
         obj_cone.location[1] = y
-        obj_cone.location[2] = z+7+high-6     
+        obj_cone.location[2] = z+7.37+high-6     
         bpy.context.view_layer.objects.active = obj_bolt
         bpy.data.objects[obj_bolt.name].select_set(True)
         bpy.ops.object.booltool_auto_difference()
-        bpy.ops.mesh.primitive_cylinder_add(radius=1.5, depth=1, enter_editmode=False, align='WORLD', location=(0, 0, 0), scale=(1, 1, 1))
-        obj_cyl = bpy.context.active_object
-        obj_cyl.location[0] = x
-        obj_cyl.location[1] = y
-        obj_cyl.location[2] = z+6.2+high-6
-        bpy.context.view_layer.objects.active = obj_bolt
-        bpy.data.objects[obj_bolt.name].select_set(True)
-        bpy.ops.object.booltool_auto_difference()
+
     def hf_Allen_m3(self):
         high = self.Shank_Length
-        r = self.Hf_radius
+        r_over = self.Hf_radius_over
+        r_under = self.Hf_radius_under
         obj_bolt = bpy.context.active_object
         x = obj_bolt.location[0]
         y = obj_bolt.location[1]
         z = obj_bolt.location[2]
-        bpy.ops.mesh.primitive_cone_add(radius1=1, radius2=r, depth=1.5, enter_editmode=False, align='WORLD', location=(0, 0, 0), scale=(1, 1, 1))
+        bpy.ops.mesh.primitive_cone_add(radius1=r_under, radius2=r_over, depth=2, enter_editmode=False, align='WORLD', location=(0, 0, 0), scale=(1, 1, 1))
         obj_cone = bpy.context.active_object
         obj_cone.location[0] = x
         obj_cone.location[1] = y
-        obj_cone.location[2] = z+6.8+high-6
+        obj_cone.location[2] = z+6.37+high-6
         bpy.context.view_layer.objects.active = obj_bolt
         bpy.data.objects[obj_bolt.name].select_set(True)
         bpy.ops.object.booltool_auto_difference()
-        bpy.ops.mesh.primitive_cylinder_add(radius=1.5, depth=1, enter_editmode=False, align='WORLD', location=(0, 0, 0), scale=(1, 1, 1))
-        obj_cyl = bpy.context.active_object
-        obj_cyl.location[0] = x
-        obj_cyl.location[1] = y
-        obj_cyl.location[2] = z+6.2+high-6
-        bpy.context.view_layer.objects.active = obj_bolt
-        bpy.data.objects[obj_bolt.name].select_set(True)
-        bpy.ops.object.booltool_auto_difference()
+
     def hf_Phillips_m3(self):
         high = self.Shank_Length
-        r = self.Hf_radius
+        r_over = self.Hf_radius_over
+        r_under = self.Hf_radius_under
         obj_bolt = bpy.context.active_object
         x = obj_bolt.location[0]
         y = obj_bolt.location[1]
         z = obj_bolt.location[2]
-        bpy.ops.mesh.primitive_cone_add(radius1=0.3, radius2=r, depth=2, enter_editmode=False, align='WORLD', location=(0, 0, 0), scale=(1, 1, 1))
+        bpy.ops.mesh.primitive_cone_add(radius1=r_under, radius2=r_over, depth=2.5, enter_editmode=False, align='WORLD', location=(0, 0, 0), scale=(1, 1, 1))
         obj = bpy.context.active_object
         obj.location[0] =x
         obj.location[1] =y
-        obj.location[2] =z+7+high - 6
+        obj.location[2] =z+6.387+high - 6
         bpy.context.view_layer.objects.active = obj_bolt
         bpy.data.objects[obj_bolt.name].select_set(True)
         bpy.ops.object.booltool_auto_difference()
@@ -816,7 +1005,7 @@ class Fail_random_m6_noBreak(bpy.types.Operator):
                 if self.bf_Bit_Type == 'bf_Phillips':
                     bpy.ops.fail.head(bf_Bit_Type='bf_Phillips',Bolt_Type='M6', Shank_Length=20,Hf_radius = r_m6_phillips)     
         return {'FINISHED'}    
-classes = [BoltFailure,Break,Corrosion,Headfail,Fail_random_m3,Fail_random_m6,Fail_random_m3_noBreak,Fail_random_m6_noBreak]
+classes = [BoltFailure,Break,Corrosion,Headfail,Fail_random_m3,Fail_random_m6,Fail_random_m3_noBreak,Fail_random_m6_noBreak,Create_damged_bolt]
 
 
 
