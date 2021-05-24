@@ -1,11 +1,11 @@
 bl_info = {
-    "name": "Damaged Bolt Sub Version",
+    "name": "Damaged Bolt",
     "author": "Liu Yang",
     "version": (0, 0, 1),
     "blender": (2, 80, 0),
     "location": "View3D > Sidebar > Edit Tab",
     "description": "Bar Combine",
-    "category": "Object",
+     "category": "Object",
 }
 
 from bpy.props import (
