@@ -67,7 +67,7 @@ class Create_damged_bolt(Operator):
             description='Choose the bolt type you would like',
             items=Bolt_List, default='None'
             )
-    bf_Bit_List = [('bf_None','None','None'),
+    bf_Bit_List = [('None','None','None'),
                      ('bf_Allen','Allen','Allen'),
                      ('bf_Torx','Torx','Torx'),
                      ('bf_Phillips','Phillips','Phillips')]
@@ -156,16 +156,7 @@ class Create_damged_bolt(Operator):
         crest = 41
         root = 1
         div = 60
-        if self.bf_Bit_Type == 'bf_None':
-            bpy.ops.mesh.bolt_add(align='WORLD', location=local, 
-                                bf_Model_Type='bf_Model_Bolt', bf_Head_Type='bf_Head_Cap', bf_Bit_Type='bf_Bit_Allen', 
-                                bf_Shank_Length=shank_length, bf_Shank_Dia=shank_dia, 
-                                bf_Allen_Bit_Depth=2, bf_Allen_Bit_Flat_Distance=3, bf_Cap_Head_Height=cap_height, bf_Cap_Head_Dia=cap_dia, 
-                                bf_Thread_Length=thread_length, 
-                                bf_Major_Dia=major, bf_Pitch=pitch, bf_Minor_Dia=minor, 
-                                bf_Crest_Percent=crest, bf_Root_Percent=root,  bf_Div_Count=div)
-
-        elif self.bf_Bit_Type == 'bf_Torx':
+        if self.bf_Bit_Type == 'bf_Torx':
             #Torx
             
             bpy.ops.mesh.bolt_add(align='CURSOR', #location=local,  
@@ -199,6 +190,14 @@ class Create_damged_bolt(Operator):
                                 bf_Major_Dia=major, bf_Pitch=pitch, bf_Minor_Dia=minor, 
                                 bf_Crest_Percent=crest, bf_Root_Percent=root,  bf_Div_Count=div)
 
+        elif self.bf_Bit_Type == 'None':
+            bpy.ops.mesh.bolt_add(align='WORLD', location=local, 
+                                bf_Model_Type='bf_Model_Bolt', bf_Head_Type='bf_Head_Cap', bf_Bit_Type='bf_Bit_None', 
+                                bf_Shank_Length=shank_length, bf_Shank_Dia=shank_dia, 
+                                bf_Allen_Bit_Depth=2, bf_Allen_Bit_Flat_Distance=3, bf_Cap_Head_Height=cap_height, bf_Cap_Head_Dia=cap_dia, 
+                                bf_Thread_Length=thread_length, 
+                                bf_Major_Dia=major, bf_Pitch=pitch, bf_Minor_Dia=minor, 
+                                bf_Crest_Percent=crest, bf_Root_Percent=root,  bf_Div_Count=div)
 
     def invoke(self, context, event):
         wm = context.window_manager
