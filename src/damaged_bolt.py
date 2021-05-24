@@ -423,11 +423,7 @@ class Corrosion(Operator):
             max=100,
             description='Percent of the corrosion',
             )
-    
-    
-    
-    
-    
+            
     def invoke(self, context, event):
         wm = context.window_manager
         return wm.invoke_props_dialog(self)

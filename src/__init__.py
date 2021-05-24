@@ -25,8 +25,8 @@ import random
 import bpy
 from .damaged_bolt import *
 
-classes = [BoltFailure, Break, Corrosion, Headfail, Fail_random_m3,
-           Fail_random_m6, Fail_random_m3_noBreak, Fail_random_m6_noBreak]
+classes = [BoltFailure,Break,Corrosion,Headfail,Fail_random_m3,Fail_random_m6,Fail_random_m3_noBreak,Fail_random_m6_noBreak,Create_damged_bolt]
+
 
 
 def register():
